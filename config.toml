@@ -1,4 +1,4 @@
-baseURL = 'http://kablogs.fun/'
+baseURL = 'https://kalogs-c.github.io/kablogs'
 languageCode = 'en-us'
 title = 'Kablogs'
 theme = "hugo-blog-awesome"
