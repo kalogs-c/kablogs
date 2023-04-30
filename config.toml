@@ -11,11 +11,6 @@ enableEmoji = true
 
 [menu]
   [[menu.main]]
-    pageRef = "/"
-    name = "Home"
-    url = "/"
-    weigth = 10
-  [[menu.main]]
     pageRef = "posts"
     name = "Posts"
     url = "/posts/"
