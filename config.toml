@@ -3,6 +3,39 @@ languageCode = 'en-us'
 title = 'Kablogs'
 theme = "hugo-blog-awesome"
 
+enableEmoji = true
+
+[markup]
+  [markup.highlight]
+    noClasses = false
+
+[menu]
+  [[menu.main]]
+    pageRef = "/"
+    name = "Home"
+    url = "/"
+    weigth = 10
+  [[menu.main]]
+    pageRef = "posts"
+    name = "Posts"
+    url = "/posts/"
+    weigth = 20
+  [[menu.main]]
+    pageRef = "about"
+    name = 'About'
+    url = '/about/'
+    weight = 30
+
+[params]
+  sitename = "Kablogs"
+  defaultColor = "auto"
+  description = "Developing apps"
+
+[params.author]
+  intro = "Carlos Camilo"
+  name = "Carlos Camilo"
+  description = "Sharing some stuffs that I've learn"
+
 [[params.socialIcons]]
 name = "github"
 url = "https://github.com/kalogs-c"
