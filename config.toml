@@ -34,7 +34,7 @@ enableEmoji = true
 [params.author]
   intro = "Carlos Camilo"
   name = "Carlos Camilo"
-  description = "Sharing some stuffs that I've learn"
+  description = "Sharing some stuffs that I've learn 🇧🇷"
 
 [[params.socialIcons]]
 name = "github"
