@@ -1,5 +1,5 @@
 ---
-title: "Super polymorphism with Typescript plus dynamic imports"
+title: "\"Super polymorphism\" with Typescript plus dynamic imports"
 date: 2023-04-30T14:18:03-03:00
 draft: false
 description: Manage application with different modules without import all of them
@@ -8,52 +8,52 @@ tags:
     - Polymorphism
 ---
 
-Imagine that you have a application that have a tons of modules and you only need to import one of them per run, how can you write an code that only import the libraries that this given module uses? 
-In this article I'll show how I did when I was exposed to this situation twice, one of them writing an web scrapper that scap content from different web sites using [Puppetter](https://pptr.dev/). 
-On this post I'll show you a simple example cli app that gets the module name from command line argument. 
-The modules that we'll use are [PokeAPI](https://pokeapi.co/) an [Digimon API](https://digimon-api.vercel.app/) All the source will be avaible on github.
+Imagine that you're writing an application that has tons of modules, but you only need to import one of them per run, how import exclusively the libraries that this given module uses? 
+In this post, I'll show how I did when I was exposed to this situation twice, one of them writing a web scrapper that scraps content from different websites using [Puppetter](https://pptr.dev/). 
+I'll show you a simple CLI app that gets the module name from the command line as an argument. 
+The modules that we'll use are [PokeAPI](https://pokeapi.co/) and [Digimon API](https://digimon-api.vercel.app/). All the source code will be available on GitHub.
 
 ## Creating project
-So lets create our typescript project, note that i'm using [pnpm](https://pnpm.io/) but you can use the package manager that you want:
+First, let's create our typescript project, note that I'm using [pnpm](https://pnpm.io/), but you can use your favorite package manager:
 
 ```sh
 # Create package.json
 ❯ pnpm init 
 
-# Install typescript dependencies
+# Install typescript dev dependencies
 ❯ pnpm add -D typescript @types/node ts-node
 
-# Axios for http requests
+# Install Axios lib for http requests
 ❯ pnpm add axios
 
 # Create tsconfig.json
-# This part you can just copy my tsconfig on github, I've made a few changes like output directory 
-# but if you want to customize your self run
+# For this part you can just copy my tsconfig on GitHub, I've made a few changes like the output directory 
+# but if you want to customize yourself, you can run
 ❯ npx tsc --init
 
 # Create src folder, that will include all our ts files
 ❯ mkdir src
 
-# Create our main file
+# Create main file, our entry point
 ❯ touch src/main.ts
 
-# Create our DataSources folder, which will stores all our polymorphic classes
+# Create DataSources folder, which will store all our polymorphic classes
 ❯ mkdir src/DataSources
 
-# Inside this folder we will create a DataSource.ts file, that is our skeleton interface
-# All the other classes will implement this inteface
+# Inside it we'll create a DataSource.ts file, which is our skeleton interface
+# All the other classes will implement this interface
 ❯ touch src/DataSources/DataSource.ts
 
-# Now we can create our modules files.
-# I will create two, one for the PokeAPI and the other to DigimonAPI
+# Now we can create the modules files.
+# I will create two, one for the PokeAPI and the other for DigimonAPI
 ❯ touch src/DataSources/Pokemon.ts src/DataSources/Digimon.ts
 
 # And now you can open the project on your favorite text editor/IDE
-# I use neovim so just type
+# I use neovim btw
 ❯ vim
 ```
 
-Our project structure will looks to something similar to this
+The project structure will look to something similar to this
 ```
 Project
 ├── node_modules
@@ -67,7 +67,7 @@ Project
 ```
 
 ## Main Interface and types
-We will start editing our DataSource.ts file, adding the main interface and also a target type, that all modules have to parse to.
+We'll start adding the main interface to DataSource.ts.
 ```ts
 /* src/DataSources/DataSource.ts */
 interface DataSource {
@@ -80,11 +80,11 @@ interface DataSource {
 export default DataSource;
 ```
 
-The `New()` function will act like a async contructor of our class, some situations we have to to async stuff before instanciate the object, and creating a function to do this will create a pattern and make our code more readable. Node that the expected return of this method is a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that contains something that implements `DataSource` when resolved.
+The `New()` function will act like a async contructor of our class, some situations we have to do async stuff before properly instantiated the object, and creating a function to do this will create a pattern and make our code more readable. Note that the expected return of this method is a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that contains something that implements `DataSource` when resolved.
 
-The `getMonster()` method receives the monster name that we want and return an [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that when resolved returns an instance of `MonsterData` that describe the data that we want to retrive from the APIs.
+The `getMonster()` method returns a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that when resolved returns an instance of `MonsterData` that describe the data that we want to retrieve from the APIs, based on the monster name.
 
-You've probably notice that the type `MonsterData` does not exist yet, so let's create it. You can create it on a separated file, but I'll still use the same one.
+You've probably noticed that the type `MonsterData` does not exist yet, so let's create it. This type will be the target of our modules, a global acceptable type that all the modules have to parse data to. You can create it on a separated file, but I'll still use the same one.
 
 ```ts
 /* src/DataSources/DataSource.ts */
@@ -96,7 +96,7 @@ export type MonsterData = {
 
 ## Implementing the Interface
 
-Now let's jump to our API consumers, I'll start with PokeAPI because Pokemon is better than Digimon 😝
+I'll start with PokeAPI consumer because Pokémon is better than Digimon 😝
 
 ```ts
 /* src/DataSources/Pokemon.ts */
@@ -132,7 +132,7 @@ class Pokemon implements DataSource {
   }
 }
 
-// Don't forget to export without instanciate the class
+// Don't forget to export without instantiated the class
 // For example, dont't type `export default new`
 export default Pokemon;
 ```
@@ -148,7 +148,8 @@ class Pokemon implements DataSource {
 
 ### 2. The `New()` "async contructor"
 
-Note that this function just return our object, but if we had the need to do some asynchronous calls before instanciate the class, we would do here. Just to examplify, imagine that before do the http requests we had to login and get an token on another endpoint and save on our class. Would be something like this
+Note that this function just return our object, but if we had the need to do some asynchronous calls before instantiated the class, we would do here. 
+Just to examplify, imagine that before do the http requests we had to log in and get a token on another endpoint and save on our class. Would be something like this
 
 ```ts
 public async New(): Promise<DataSource> {
@@ -165,18 +166,20 @@ public async New(): Promise<DataSource> {
 
 ### 3. Data modeling
 
-Check `getMonster()` method, we always return a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) with `MonsterData` type inside it, that means that on we always have to parse the data model returned from the api to this expected model. And It's recomended that you create custom types that describes which kind of data we expect to receive from the http request, I didn't do that because this is a really simple project.
+Check `getMonster()` method, we always return a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) with `MonsterData` type inside it, that means that we always have to parse the data model received from the api to this expected model.
+And It's recomended that you create custom types that describes which kind of data we expect to receive from the http request.
+I didn't do that because this is a really simple project.
 
 ### 4. Exporting our class
 
 I'm exporting the class, and not the object. 
-Notice that `export default Pokemon` is different than `export default new Pokemon`.
+Notice that `export default Pokemon` is different from `export default new Pokemon`.
 There is no right or wrong way here, but be sure that all your classes follow the same pattern.
 On this project all classes we will export without the `new` keyword.
 
 ## Digimon implementacion
 
-This one will be basically the samething that we did on Pokemon.ts file
+This one will be basically the same thing that we did on the Pokemon.ts file
 
 ```ts
 /* src/DataSources/Pokemon.ts */
@@ -243,7 +246,7 @@ So let's jump to the part where things happen
 
 ```ts
 const dataSource: DataSource = await ( 
-  new (await import(`./DataSources/${dsName}`)).default // Import and instanciate the class
+  new (await import(`./DataSources/${dsName}`)).default // Import and instantiated the class
 ).New() // Call the method that do async stuff
 ```
 
@@ -256,20 +259,22 @@ await import(`./DataSources/${dsName}`)
 { default: class }
 ```
 
-This block of code returns an object with all the exported stuff inside it, the one that matter for us is the default one, that's why we usethe  `.default` after the close parenthesis, and as returns a class, we use the `new` keyword to instanciate it.
+This block of code returns an object with all the exported stuff inside it, the one that matters for us is the default one, that's why we use the `.default` after the close parenthesis, and as returns a class, we use the `new` keyword to instantiate it.
 
-the first await is connected to the `.New()` method, that returns a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) with the Object instanciated inside of it.
+The first await is connected to the `.New()` method, which returns a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) with the Object instantiated inside of it.
 
-Now we have our class totally instanciated and we can call the methods inside the `DataSource` interface. We do this on this block
+Now the class are totally instantiated, and we can call the methods inside the `DataSource` interface. We do this on this block
 
 ```ts
-console.table(await dataSource.getMonster(monsterName));
+console.log(await dataSource.getMonster(monsterName));
 ```
 
 ## Testing
-Now, if we execute the project passing through command line argument our module and our monster name, we will get this result
+Now, if we execute the project by passing arguments through the command line.
+We need to pass the module and the monster name.
+We will get this result
 
-### Pokemon
+### Pokémon
 ```sh
 ❯ npx ts-node src/main.ts Pokemon snorlax
 ```
@@ -291,12 +296,12 @@ Now, if we execute the project passing through command line argument our module 
 }
 ```
 
-Note that our first param is exactly our file name where we wrote the class, and not the class name
+Note that our first parameter is exactly our file name where we wrote the class and not the class name
 
 ## Tchau 👋
 
-That's it for today, feel free to add something and if I made something wrong or that can be improved please tell me and I will release a patch correcting and adding credits. 
+That's it for today, feel free to add something and if I made something wrong or that can be improved please tell me please. 
 
-And remember that all the source code of this mini project are avaible on [github](https://github.com/kalogs-c/super-polymorphism).
+And remember that all the source code of this mini project is available on [GitHub](https://github.com/kalogs-c/super-polymorphism).
 
 Tchau!!
